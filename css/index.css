@@ -1,0 +1,7 @@
+.silent {
+    display: none;
+}
+
+div.inside-padding {
+    padding: 1em;
+}

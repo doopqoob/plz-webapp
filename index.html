@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bonequest FM Song Request Form</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/http.js"></script>
+    <script src="/js/index.js"></script>
+
+</head>
+<body class="bg-dark text-light">
+
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-6">
+            <div class="mt-lg-5"><h1 class="font-italic font-weight-bold">BONEQUEST.FM</h1></div>
+            <div class="mt-sm-2"><h2 class="font-italic font-weight-bold">SONG REQUEST FORM</h2></div>
+
+
+            <div class="form-group inside-padding rounded border border-white">
+                <label>Select a BONEQUEST FM show:</label>
+                <div class="radio">
+                    <label><input type="radio" name="show_id" id="show_1" value="1" onclick="setShow(1)"> Attack of the 80s</label>
+                </div>
+
+                <div class="radio">
+                    <label><input type="radio" name="show_id" id="show_4" value="4" onclick="setShow(4)"> New Year's Cockin' Eve</label>
+                </div>
+
+                <div class="radio">
+                    <label><input type="radio" name="show_id" id="show_2" value="2" onclick="setShow(2)"> DJ Doop's Decades of Dance</label><br />
+                </div>
+
+                <div class="radio">
+                    <label><input type="radio" name="show_id" id="show_3" value="3" onclick="setShow(3)"> DJ Doop's Dolce Disco</label>
+                </div>
+
+                <div class="silent">
+                    <input type="text" class="form-control" id="email" placeholder="Input your email address here" maxlength="128">
+                </div>
+
+                <p class="silent" id="show-id"></p>
+                <p class="silent" id="song-id"></p>
+
+            </div>
+
+            <div class="form-group inside-padding rounded border border-white silent" id="select-buttons">
+                <table class="table-borderless w-100">
+                    <tr>
+                        <td class="w-50">
+                            <button class="btn btn-outline-light float-left" id="select-by-artist-button" onclick="getArtists()">Select by Artist</button>
+                        </td>
+                        <td class="w-50">
+                            <button class="btn btn-outline-light float-right" id="select-by-title-button" onclick="getSongsByTitle()">Select by Title</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="form-group rounded border border-white inside-padding silent" id="select-by-artist-div">
+                <div class="form-group">
+                    <select class="form-control" id="artists" name="artists" onchange="getSongsByArtist()">
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" id="songs-by-artist" name="songs-by-artist" onchange="setSongByArtist()">
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="name-by-artist" placeholder="Input your name or handle here" maxlength="128">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="notes-by-artist" placeholder="Input any notes about this request here" maxlength="512">
+                </div>
+                <table class="table-borderless w-100">
+                    <tr>
+                        <td class="w-75">
+                            <button class="btn btn-outline-light align-self-md-center" onclick="showFreeformInput()">Can't find the song you want? Click here!</button>
+                        </td>
+                        <td class="w-25">
+                            <button class="btn btn-primary float-right" id="submit-by-artist" onclick="submitByArtist()">Submit</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="form-group rounded border border-white inside-padding silent" id="select-by-title-div">
+                <div class="form-group">
+                    <select class="form-control" id="songs" name="songs" onchange="setSongByTitle()">
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="name-by-title" placeholder="Input your name or handle here" maxlength="128">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="notes-by-title" placeholder="Input any notes about this request here" maxlength="512">
+                </div>
+                <table class="table-borderless w-100">
+                    <tr>
+                        <td class="w-75">
+                            <button class="btn btn-outline-light align-self-md-center" onclick="showFreeformInput()">Can't find the song you want? Click here!</button>
+                        </td>
+                        <td class="w-25">
+                            <button class="btn btn-primary float-right" id="submit-by-title" onclick="submitByTitle()">Submit</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="form-group rounded border border-white inside-padding silent" id="freeform-div">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="freeform-artist" placeholder="Input the artist's name here" maxlength="128">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="freeform-title" placeholder="Input the song's title here" maxlength="256">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="freeform-submitted_by" placeholder="Input your name or handle here" maxlength="128">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="freeform-notes" placeholder="Input any notes about this request here" maxlength="512">
+                </div>
+                <table class="table-borderless w-100">
+                    <tr>
+                        <td class="w-75">
+                            <button class="btn btn-outline-light align-self-md-center" onclick="clearForm()">Select by Artist or Title instead</button>
+                        </td>
+                        <td class="w-25">
+                            <button class="btn btn-primary float-right" id="freeform-submit" onclick="submitFreeForm()">Submit</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="success_modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h2 class="font-italic font-weight-bold text-dark">SUCCESS!</h2>
+                    <p class="text-dark">Your song request was successfully received. Be sure to listen for your
+                        request on BoneQuest FM!</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="ratelimit_modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h2 class="font-italic font-weight-bold text-dark">OH NO!</h2>
+                    <p class="text-dark">You've submitted too many requests in too short a time period. Relax, grab
+                        a drink, and try again in a few minutes.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="failure_modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h2 class="font-italic font-weight-bold text-dark">WHOOPS!</h2>
+                    <p class="text-dark">Something went wrong submitting your song request. Please ensure that the
+                        form is filled out completely and then try again.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
